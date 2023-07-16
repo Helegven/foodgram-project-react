@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
+from rest_framework import filters
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -18,7 +19,6 @@ from recipes.models import (Ingredient, Recipe, RecipeIngredients,
 from .filters import RecipeFilter
 from .mixins import CreateListViewSet
 from .pagination import CustomPagination
-# from .models import Favorite, Recipe, RecipeIngredients, ShoppingCart, Tag
 from .permissions import IsAuthorOrAdminPermission, IsOwnerOrReadOnly
 from .serializers import (IngredientSerializer,
                           RecipeCreateUpdateSerializer,
@@ -116,5 +116,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (filter.SearchFilter,)
+    filter_backends = (filters.SearchFilter,)
     search_fields = ('^name',)
