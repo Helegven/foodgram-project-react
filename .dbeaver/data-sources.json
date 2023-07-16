@@ -1,7 +1,7 @@
 {
 	"folders": {},
 	"connections": {
-		"sqlite_jdbc-1892b737d88-2b21e428e941724e": {
+		"sqlite_jdbc-1894f86ff5d-32d83d2458b8cbeb": {
 			"provider": "sqlite",
 			"driver": "sqlite_jdbc",
 			"name": "db.sqlite3",

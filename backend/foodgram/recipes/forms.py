@@ -1,11 +1,11 @@
 from django import forms
 
-from .models import Comment, Post
+from .models import Recipe
 
 
 class PostForm(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Recipe
         fields = ('text', 'group', 'image')
         help_texts = {
             'text': 'Текст нового поста',
@@ -13,13 +13,13 @@ class PostForm(forms.ModelForm):
         }
 
 
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ('text',)
-        labels = {
-            'text': 'Текст',
-        }
-        help_texts = {
-            'text': 'Текст нового комментария',
-        }
+# class CommentForm(forms.ModelForm):
+#     class Meta:
+#         model = Comment
+#         fields = ('text',)
+#         labels = {
+#             'text': 'Текст',
+#         }
+#         help_texts = {
+#             'text': 'Текст нового комментария',
+#         }
