@@ -2,7 +2,7 @@ from distutils.util import strtobool
 
 from django_filters import rest_framework
 
-from recipes.models import Recipe, Tag
+from recipes.models import Recipe, Tag, Favorite, ShoppingCart
 
 CHOICES_LIST = (
     ('0', 'False'),
@@ -28,6 +28,32 @@ class RecipeFilter(rest_framework.FilterSet):
         to_field_name='slug',
         queryset=Tag.objects.all()
     )
+
+    def is_favorited_method(self, queryset, name, value):
+        if self.request.user.is_anonymous:
+            return Recipe.objects.none()
+
+        favorites = Favorite.objects.filter(user=self.request.user)
+        recipes = [item.recipe.id for item in favorites]
+        new_queryset = queryset.filter(id__in=recipes)
+
+        if not strtobool(value):
+            return queryset.difference(new_queryset)
+
+        return queryset.filter(id__in=recipes)
+
+    def is_in_shopping_cart_method(self, queryset, name, value):
+        if self.request.user.is_anonymous:
+            return Recipe.objects.none()
+
+        shopping_cart = ShoppingCart.objects.filter(user=self.request.user)
+        recipes = [item.recipe.id for item in shopping_cart]
+        new_queryset = queryset.filter(id__in=recipes)
+
+        if not strtobool(value):
+            return queryset.difference(new_queryset)
+
+        return queryset.filter(id__in=recipes)
 
     class Meta:
         model = Recipe

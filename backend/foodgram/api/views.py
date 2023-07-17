@@ -13,11 +13,10 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 
 from recipes.models import (Ingredient, Recipe, RecipeIngredients,
-                            Tag, Subscription
+                            Tag, Subscription, Favorite, ShoppingCart
                             )
 
 from .filters import RecipeFilter
-from .mixins import CreateListViewSet
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrAdminPermission, IsOwnerOrReadOnly
 from .serializers import (IngredientSerializer,
@@ -111,6 +110,116 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeCreateUpdateSerializer
 
         return RecipeSerializer
+
+    @action(detail=True, methods=('post', 'delete'))
+    def favorite(self, request, pk=None):
+        user = self.request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+
+        if self.request.method == 'POST':
+            if Favorite.objects.filter(
+                user=user,
+                recipe=recipe
+            ).exists():
+                raise exceptions.ValidationError('Рецепт уже в избранном.')
+
+            Favorite.objects.create(user=user, recipe=recipe)
+            serializer = ShortRecipeSerializer(
+                recipe,
+                context={'request': request}
+            )
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if self.request.method == 'DELETE':
+            if not Favorite.objects.filter(
+                user=user,
+                recipe=recipe
+            ).exists():
+                raise exceptions.ValidationError(
+                    'Рецепта нет в избранном, либо он уже удален.'
+                )
+
+            favorite = get_object_or_404(Favorite, user=user, recipe=recipe)
+            favorite.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(detail=True, methods=('post', 'delete'))
+    def shopping_cart(self, request, pk=None):
+        user = self.request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+
+        if self.request.method == 'POST':
+            if ShoppingCart.objects.filter(
+                user=user,
+                recipe=recipe
+            ).exists():
+                raise exceptions.ValidationError(
+                    'Рецепт уже в списке покупок.'
+                )
+
+            ShoppingCart.objects.create(user=user, recipe=recipe)
+            serializer = ShortRecipeSerializer(
+                recipe,
+                context={'request': request}
+            )
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if self.request.method == 'DELETE':
+            if not ShoppingCart.objects.filter(
+                user=user,
+                recipe=recipe
+            ).exists():
+                raise exceptions.ValidationError(
+                    'Рецепта нет в списке покупок, либо он уже удален.'
+                )
+
+            shopping_cart = get_object_or_404(
+                ShoppingCart,
+                user=user,
+                recipe=recipe
+            )
+            shopping_cart.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    @action(
+        detail=False,
+        methods=('get',),
+        permission_classes=(IsAuthenticated,)
+    )
+    def download_shopping_cart(self, request):
+        shopping_cart = ShoppingCart.objects.filter(user=self.request.user)
+        recipes = [item.recipe.id for item in shopping_cart]
+        buy_list = RecipeIngredients.objects.filter(
+            recipe__in=recipes
+        ).values(
+            'ingredient'
+        ).annotate(
+            amount=Sum('amount')
+        )
+
+        buy_list_text = 'Список покупок с сайта Foodgram:\n\n'
+        for item in buy_list:
+            ingredient = Ingredient.objects.get(pk=item['ingredient'])
+            amount = item['amount']
+            buy_list_text += (
+                f'{ingredient.name}, {amount} '
+                f'{ingredient.measurement_unit}\n'
+            )
+
+        response = HttpResponse(buy_list_text, content_type="text/plain")
+        response['Content-Disposition'] = (
+            'attachment; filename=shopping-list.txt'
+        )
+
+        return response
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
