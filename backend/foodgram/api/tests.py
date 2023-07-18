@@ -1,34 +1,63 @@
-# import pytest
-# from django.test import TestCase
-# from rest_framework.test import APIRequestFactory, APIClient, force_authenticate
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APITestCase
+
+from recipes.models import Userpi
 
 
-# @pytest.fixture
-# def api_client():
-#     return APIClient
+class MakeUserTest(APITestCase):
+    def test_create_user(self):
+    """проверяем возможность регестрации"""
+    request_data = {
+        'email':'test@mail.com',
+        'username':'test',
+        'firt_name':'Dyadya',
+        'last_name':'Vitiya',
+        'password':'1234!wowpassword'
+    }
+    response = self.client.post(reverse('api:users'),request_data)
+    excepted_data = {
+        'email':'test@mail.com',
+        'username':'test',
+        'firt_name':'Dyadya',
+        'last_name':'Vitiya',
+        'id':1
+    }    
+    self.assertEqual(
+        response.status_code,
+        status.HTTP_201_CREATED,"Ответ сервера не 201"
+    )
+    self.assertEqual(
+    User.objects.all().count(),1,"Новый пользователь не появиился в Базе данных"
+    )
+    self.assertEqual(
+    response.data, excepted_data, "Проверьте тело ответа на ошибку, несоотвествие документации"
+    )
 
+class TokenTest(APITestCase):
+    def setup(self):
+        """Создаем тестовые данные"""
+        user_data = {
+            'email':'test@mail.com',
+            'username':'test',
+            'firt_name':'Dyadya',
+            'last_name':'Vitiya'
+        }
+        self.user = User.objects.create(**user_data)
+        self.user.set_password('1234!wowpassword')
+        self.user.save()
 
-# class TestIngredientsEndpoints:
-#     """Тестирвоание эндпоинта"""
-
-#     endpoint = "/api/v1/ingredients"
-
-#     def test_igredients_get(self, endpoint, ingridient_factory):
-#         response = api_client().get(self.endpoint)
-#         assert response.status_code == 200
-
-
-
-# class TestAPIEndpoints:
-
-#     def setUp(self):
-#         usert_test1 = User.obj
-
-# factory = APIRequestFactory()
-# user = User.objects.get(username='olivia')
-# view = AccountDetail.as_view()
-
-# # Make an authenticated request to the view...
-# request = factory.get('/accounts/django-superstars/')
-# force_authenticate(request, user=user)
-# response = view(request)
+    def get_token_test(self):
+        """Проверяем возможность получить токен"""
+        request_data  = {
+            'email':'test@mail.com',
+            'password':'1234!wowpassword'
+        }
+        response = self.client.post(reverse('v1/auth/'),request_data)
+        excepted_date = {
+            'auth_token': Token.objects.get(user=self.user).key
+        }
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,"Ответ сервера не 201")
+        self.assertEqual(Token.objects.all().count(),1,"Токен не был создан в базе данныз")
+        self.assertEqual(response.data,excepted_date,"Проверьте тело ответа на ошибку, несоотвествие документации")

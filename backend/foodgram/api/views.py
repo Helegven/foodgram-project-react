@@ -15,7 +15,7 @@ from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
 
 from .filters import RecipeFilter
 from .pagination import CustomPagination
-from .permissions import IsAuthorOrAdminPermission, IsOwnerOrReadOnly
+from .permissions import IsAuthorOrAdminPermission
 from .serializers import (IngredientSerializer, RecipeCreateUpdateSerializer,
                           RecipeSerializer, ShortRecipeSerializer,
                           SubscriptionSerializer, TagSerializer)
