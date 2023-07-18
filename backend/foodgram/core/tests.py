@@ -12,7 +12,7 @@ class ViewTestClass(TestCase):
         response = self.client.get('/nonexist-page/').status_code
         self.assertEqual(response, HTTPStatus.NOT_FOUND)
 
-    def test_error_page(self):
+    def test_error(self):
         """URL-адрес c ошибкой использует соответствующий шаблон."""
         response = self.client.get('/nonexist-page/')
         self.assertTemplateUsed(response, 'core/404.html')
