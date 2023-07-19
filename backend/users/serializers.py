@@ -2,7 +2,6 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
 from recipes.models import Recipe
-from recipes.serializers import ShortRecipeSerializer
 
 from .models import Subscription, User
 
@@ -41,6 +40,7 @@ class SubscriptionSerializer(CustomUserSerializer):
     )
 
     def get_srs(self):
+        from recipes.serializers import ShortRecipeSerializer
         return ShortRecipeSerializer
 
     def get_recipes(self, obj):
