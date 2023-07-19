@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
-from recipes.models import User
+from users.models import User
 
 
 class MakeUserTest(APITestCase):
