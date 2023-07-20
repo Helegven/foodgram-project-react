@@ -21,7 +21,7 @@ class Subscription(models.Model):
     )
 
     class Meta:
-        verbose_name = 'подписка'
+        verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
 
         constraints = (
@@ -54,7 +54,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        verbose_name = 'избранное'
+        verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
 
         constraints = (

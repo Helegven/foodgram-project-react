@@ -1,4 +1,3 @@
-from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import exceptions, serializers
@@ -34,14 +33,14 @@ class RecipeIngredientsSerializer(serializers.ModelSerializer):
 
 class CreateUpdateRecipeIngredientsSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
-    amount = serializers.IntegerField(
-        validators=(
-            MinValueValidator(
-                1,
-                message='Количество ингредиента должно быть 1 или более.'
-            ),
-        )
-    )
+    amount = serializers.IntegerField()
+
+    def validate(self, data):
+        if data['amount'] <= 0:
+            raise serializers.ValidationError(
+                "Количество ингредиента должно быть 1 или более."
+            )
+        return data
 
     class Meta:
         model = Ingredient
@@ -88,14 +87,14 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     ingredients = CreateUpdateRecipeIngredientsSerializer(many=True)
     image = Base64ImageField()
-    cooking_time = serializers.IntegerField(
-        validators=(
-            MinValueValidator(
-                1,
-                message='Время приготовления должно быть 1 или более.'
-            ),
-        )
-    )
+    cooking_time = serializers.IntegerField()
+
+    def validate(self, data):
+        if data['cooking_time'] <= 0:
+            raise serializers.ValidationError(
+                "Время приготовления должно быть 1 или более."
+            )
+        return data
 
     def validate_tags(self, value):
         if not value:
@@ -121,7 +120,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        author = self.context.get('request').user
+        author = self.context.query_params('request').user
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
 
@@ -164,7 +163,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serializer = RecipeSerializer(
             instance,
-            context={'request': self.context.get('request')}
+            context={'request': self.context.query_params('request')}
         )
 
         return serializer.data
@@ -175,7 +174,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')

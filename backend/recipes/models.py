@@ -1,17 +1,17 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
 
+from foodgram.const import max_len
 from ingridients.models import Ingredient
 from tags.models import Tag
-
-# from users.models import User
 
 User = get_user_model()
 
 
 class Recipe(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=max_len,
         verbose_name='Название рецепта',
         help_text='Название рецепта',
     )
@@ -27,6 +27,7 @@ class Recipe(models.Model):
         help_text='Игредиенты для рецепта',
     )
     cooking_time = models.PositiveSmallIntegerField(
+        validators=(MinValueValidator(1),),
         verbose_name='Время приготовления (в минутах)',
         help_text='Время приготовления (в минутах)',
     )
@@ -55,7 +56,7 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ('-pub_date',)
-        verbose_name = 'рецепт'
+        verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
@@ -78,7 +79,7 @@ class RecipeIngredients(models.Model):
     )
 
     class Meta:
-        verbose_name = 'ингредиенты'
+        verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
@@ -98,7 +99,7 @@ class RecipeTags(models.Model):
     )
 
     class Meta:
-        verbose_name = 'теги'
+        verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
     def __str__(self):
@@ -120,8 +121,8 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
-        verbose_name = 'список покупок'
-        verbose_name_plural = 'Список покупок'
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'
 
         constraints = (
             models.UniqueConstraint(

@@ -57,6 +57,15 @@ class CustomUserViewSet(UserViewSet):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(
+        detail=True,
+        methods=('delete'),
+        serializer_class=SubscriptionSerializer
+    )
+    def unsubscribe(self, request, id=None):
+        user = self.request.user
+        author = get_object_or_404(User, pk=id)
+
         if self.request.method == 'DELETE':
             if not Subscription.objects.filter(
                 user=user,

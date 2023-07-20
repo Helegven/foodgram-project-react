@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 
 from ingridients.views import IngredientViewSet
@@ -12,11 +14,17 @@ router_v1 = DefaultRouter()
 router_v1.register('ingredients', IngredientViewSet)
 router_v1.register('recipes', RecipeViewSet)
 router_v1.register('tags', TagViewSet)
-router_v1.register('users', CustomUserViewSet, basename='users')
+router_v1.register('users', CustomUserViewSet)
 
 urlpatterns = [
-    path('v1/', include(router_v1.urls)),
-    path('v1/auth/', include('djoser.urls.authtoken')),
+    path('admin/', admin.site.urls),
+    path('api/', include(router_v1.urls)),
+    path('api/auth/', include('djoser.urls.authtoken')),
+    path(
+        'redoc/',
+        TemplateView.as_view(template_name='redoc.html'),
+        name='redoc'
+    ),
 ]
 
 if settings.DEBUG:

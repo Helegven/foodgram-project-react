@@ -1,9 +1,11 @@
 from django.db import models
 
+from foodgram.const import max_len
+
 
 class Ingredient(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=max_len,
         verbose_name='Название ингредиента',
         help_text='Название ингредиента',
     )
@@ -14,9 +16,8 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        verbose_name = 'ингредиент'
+        verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-
         constraints = (
             models.UniqueConstraint(
                 fields=('name', 'measurement_unit'),

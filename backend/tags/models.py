@@ -1,10 +1,12 @@
 from django.core.validators import RegexValidator
 from django.db import models
 
+from foodgram.const import max_len
+
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=max_len,
         verbose_name='Название тега',
         help_text='Название тега',
     )
@@ -20,7 +22,6 @@ class Tag(models.Model):
         ]
     )
     slug = models.SlugField(
-        max_length=50,
         unique=True,
         verbose_name='Идентификатор тега',
         help_text='Идентификатор тега',
