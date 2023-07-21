@@ -38,6 +38,11 @@ class SubscriptionSerializer(CustomUserSerializer):
         method_name='get_recipes_count'
     )
 
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'email',
+                  'is_subscribed', 'recipes', 'recipes_count')
+
     def get_short_recipe_serializer(self):
         from recipes.serializers import ShortRecipeSerializer
         return ShortRecipeSerializer
@@ -63,8 +68,3 @@ class SubscriptionSerializer(CustomUserSerializer):
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj).count()
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email',
-                  'is_subscribed', 'recipes', 'recipes_count')

@@ -17,6 +17,10 @@ class RecipeIngredientsSerializer(serializers.ModelSerializer):
         method_name='get_measurement_unit'
     )
 
+    class Meta:
+        model = RecipeIngredients
+        fields = ('id', 'name', 'measurement_unit', 'amount')
+
     def get_id(self, obj):
         return obj.ingredient.id
 
@@ -26,14 +30,14 @@ class RecipeIngredientsSerializer(serializers.ModelSerializer):
     def get_measurement_unit(self, obj):
         return obj.ingredient.measurement_unit
 
-    class Meta:
-        model = RecipeIngredients
-        fields = ('id', 'name', 'measurement_unit', 'amount')
-
 
 class CreateUpdateRecipeIngredientsSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     amount = serializers.IntegerField()
+
+    class Meta:
+        model = Ingredient
+        fields = ('id', 'amount')
 
     def validate(self, data):
         if data['amount'] <= 0:
@@ -41,10 +45,6 @@ class CreateUpdateRecipeIngredientsSerializer(serializers.ModelSerializer):
                 "Количество ингредиента должно быть 1 или более."
             )
         return data
-
-    class Meta:
-        model = Ingredient
-        fields = ('id', 'amount')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -60,6 +60,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         method_name='get_is_in_shopping_cart'
     )
 
+    class Meta:
+        model = Recipe
+        exclude = ('pub_date',)
+
     def get_ingredients(self, obj):
         ingredients = RecipeIngredients.objects.filter(recipe=obj)
         serializer = RecipeIngredientsSerializer(ingredients, many=True)
@@ -74,10 +78,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         return Favorite.objects.filter(user=user, recipe=obj).exists()
 
-    class Meta:
-        model = Recipe
-        exclude = ('pub_date',)
-
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
@@ -88,6 +88,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     ingredients = CreateUpdateRecipeIngredientsSerializer(many=True)
     image = Base64ImageField()
     cooking_time = serializers.IntegerField()
+
+    class Meta:
+        model = Recipe
+        exclude = ('pub_date',)
 
     def validate(self, data):
         if data['cooking_time'] <= 0:
@@ -167,10 +171,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         )
 
         return serializer.data
-
-    class Meta:
-        model = Recipe
-        exclude = ('pub_date',)
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):

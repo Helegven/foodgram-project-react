@@ -40,22 +40,20 @@ class CustomUserViewSet(UserViewSet):
     def subscribe(self, request, id=None):
         user = self.request.user
         author = get_object_or_404(User, pk=id)
+        if user == author:
+            raise exceptions.ValidationError(
+                'Подписка на самого себя запрещена.'
+            )
+        if Subscription.objects.filter(
+            user=user,
+            author=author
+        ).exists():
+            raise exceptions.ValidationError('Подписка уже оформлена.')
 
-        if self.request.method == 'POST':
-            if user == author:
-                raise exceptions.ValidationError(
-                    'Подписка на самого себя запрещена.'
-                )
-            if Subscription.objects.filter(
-                user=user,
-                author=author
-            ).exists():
-                raise exceptions.ValidationError('Подписка уже оформлена.')
+        Subscription.objects.create(user=user, author=author)
+        serializer = self.get_serializer(author)
 
-            Subscription.objects.create(user=user, author=author)
-            serializer = self.get_serializer(author)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(
         detail=True,
@@ -66,22 +64,19 @@ class CustomUserViewSet(UserViewSet):
         user = self.request.user
         author = get_object_or_404(User, pk=id)
 
-        if self.request.method == 'DELETE':
-            if not Subscription.objects.filter(
-                user=user,
-                author=author
-            ).exists():
-                raise exceptions.ValidationError(
-                    'Подписка не была оформлена, либо уже удалена.'
-                )
-
-            subscription = get_object_or_404(
-                Subscription,
-                user=user,
-                author=author
+        if not Subscription.objects.filter(
+            user=user,
+            author=author
+        ).exists():
+            raise exceptions.ValidationError(
+                'Подписка не была оформлена, либо уже удалена.'
             )
-            subscription.delete()
 
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        subscription = get_object_or_404(
+            Subscription,
+            user=user,
+            author=author
+        )
+        subscription.delete()
 
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return Response(status=status.HTTP_204_NO_CONTENT)

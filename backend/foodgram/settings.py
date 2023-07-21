@@ -7,7 +7,13 @@ SECRET_KEY = 'django-insecure-rr(kas$x%bp*y0=rn%y@&$a%33r-@3-)+sas5&fsv11&df(jl-
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['158.160.73.173', '127.0.0.1', '0.0.0.0', 'localhost']
+ALLOWED_HOSTS = [
+    '158.160.73.173',
+    '127.0.0.1',
+    '0.0.0.0',
+    'localhost',
+    'foodisgood.ddns.net'
+]
 
 AMAUNT_POST_ON_PAGE = 6
 
