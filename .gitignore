@@ -109,6 +109,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.dbeaver
+.vscode
 
 # Spyder project settings
 .spyderproject
