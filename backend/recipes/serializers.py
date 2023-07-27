@@ -3,7 +3,7 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import exceptions, serializers
 
 from ingridients.models import Ingredient
-from recipes.models import Recipe, RecipeIngredients
+from recipes.models import Recipe, RecipeIngredients, ShoppingCart
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.models import Favorite
@@ -48,11 +48,17 @@ class CreateUpdateRecipeIngredientsSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        required=True,
+    )
     author = CustomUserSerializer(read_only=True)
     tags = TagSerializer(many=True)
     ingredients = serializers.SerializerMethodField(
         method_name='get_ingredients'
     )
+    cooking_time = serializers.IntegerField(max_value=32767, min_value=1)
+    image = Base64ImageField(max_length=None, use_url=True)
+    text = serializers.CharField()
     is_favorited = serializers.SerializerMethodField(
         method_name='get_is_favorited'
     )
@@ -77,6 +83,14 @@ class RecipeSerializer(serializers.ModelSerializer):
             return False
 
         return Favorite.objects.filter(user=user, recipe=obj).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        user = self.context['request'].user
+
+        if user.is_anonymous:
+            return False
+
+        return ShoppingCart.objects.filter(user=user, recipe=obj).exists()
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -124,7 +138,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        author = self.context.query_params('request').user
+        author = self.context.get('request').user
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
 
@@ -167,7 +181,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         serializer = RecipeSerializer(
             instance,
-            context={'request': self.context.query_params('request')}
+            context={'request': self.context.get('request')}
         )
 
         return serializer.data

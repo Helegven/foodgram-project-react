@@ -5,7 +5,6 @@ from .models import Recipe, ShoppingCart
 # from django.contrib.admin import display
 
 
-
 class RecipeIngredientsInLine(admin.TabularInline):
     model = Recipe.ingredients.through
     extra = 1

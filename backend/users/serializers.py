@@ -49,17 +49,17 @@ class SubscriptionSerializer(CustomUserSerializer):
 
     def get_recipes(self, obj):
         author_recipes = Recipe.objects.filter(author=obj)
-
-        if 'recipes_limit' in self.context.query_params('request').GET:
+        print(self.context.get('request').query_params)
+        if 'recipes_limit' in self.context.get('request').query_params:
             recipes_limit = (
-                self.context.query_params('request').GET['recipes_limit']
+                self.context.get('request').query_params['recipes_limit']
             )
             author_recipes = author_recipes[:int(recipes_limit)]
 
         if author_recipes:
             serializer = self.get_short_recipe_serializer()(
                 author_recipes,
-                context={'request': self.context.query_params('request')},
+                context={'request': self.context.get('request')},
                 many=True
             )
             return serializer.data

@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import exceptions, status
-from rest_framework.decorators import action, list_route
+from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
@@ -80,9 +80,3 @@ class CustomUserViewSet(UserViewSet):
         subscription.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @list_route(permission_classes=[IsAuthenticated])
-    def me(self, request, *args, **kwargs):
-        self.object = get_object_or_404(User, pk=request.user.id)
-        serializer = self.get_serializer(self.object)
-        return Response(serializer.data)
