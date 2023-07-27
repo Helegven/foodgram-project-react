@@ -1,5 +1,4 @@
 from django.db import models
-
 from foodgram.const import max_len
 
 
