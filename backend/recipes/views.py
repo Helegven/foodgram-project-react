@@ -3,14 +3,13 @@ from api.pagination import CustomPagination
 from api.permissions import IsAuthorOrAdminPermission
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from ingridients.models import Ingredient
 from rest_framework import exceptions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.models import Favorite
 
-from .models import Recipe, RecipeIngredients, ShoppingCart
+from .models import Recipe, ShoppingCart
 from .serializers import (RecipeCreateUpdateSerializer, RecipeSerializer,
                           ShortRecipeSerializer)
 from .shop_cart import get_shopping_cart
@@ -96,8 +95,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 recipe=recipe
         ).exists():
             raise exceptions.ValidationError(
-                    'Рецепта нет в списке покупок, либо он уже удален.'
-                )
+                'Рецепта нет в списке покупок, либо он уже удален.'
+            )
 
         shopping_cart = get_object_or_404(
             ShoppingCart,
@@ -116,5 +115,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         try:
             return get_shopping_cart(request)
-        except:
+        except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)

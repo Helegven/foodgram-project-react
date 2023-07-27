@@ -32,7 +32,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 class SubscriptionSerializer(CustomUserSerializer):
     recipes = serializers.SerializerMethodField(
         method_name='get_recipes'
-        )
+    )
     recipes_count = serializers.SerializerMethodField(
         method_name='get_recipes_count'
     )
