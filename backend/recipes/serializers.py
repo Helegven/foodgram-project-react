@@ -11,10 +11,16 @@ from users.serializers import CustomUserSerializer
 
 
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField(method_name='get_id')
-    name = serializers.SerializerMethodField(method_name='get_name')
+    id = serializers.SerializerMethodField(
+        source='ingredient.id'
+    )
+    name = serializers.SerializerMethodField(
+        read_only=True,
+        source='ingredient.name'
+    )
     measurement_unit = serializers.SerializerMethodField(
-        method_name='get_measurement_unit'
+        read_only=True,
+        source='ingredient.measurement_unit'
     )
 
     class Meta:
@@ -54,17 +60,13 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     tags = TagSerializer(many=True)
     ingredients = serializers.SerializerMethodField(
-        method_name='get_ingredients'
+        source='recipe_ingredients'
     )
     cooking_time = serializers.IntegerField(max_value=32767, min_value=1)
     image = Base64ImageField(max_length=None, use_url=True)
     text = serializers.CharField()
-    is_favorited = serializers.SerializerMethodField(
-        method_name='get_is_favorited'
-    )
-    is_in_shopping_cart = serializers.SerializerMethodField(
-        method_name='get_is_in_shopping_cart'
-    )
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe

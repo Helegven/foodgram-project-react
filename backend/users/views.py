@@ -18,7 +18,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        methods=('get',),
+        methods=['GET'],
         serializer_class=SubscriptionSerializer,
         permission_classes=(IsAuthenticated, )
     )
@@ -34,7 +34,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
+        methods=['POST'],
         serializer_class=SubscriptionSerializer
     )
     def subscribe(self, request, id=None):
@@ -55,11 +55,7 @@ class CustomUserViewSet(UserViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(
-        detail=True,
-        methods=('delete'),
-        serializer_class=SubscriptionSerializer
-    )
+    @subscribe.mapping.delete
     def unsubscribe(self, request, id=None):
         user = self.request.user
         author = get_object_or_404(User, pk=id)

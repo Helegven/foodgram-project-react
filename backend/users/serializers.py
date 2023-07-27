@@ -7,9 +7,7 @@ from .models import Subscription, User
 
 
 class CustomUserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField(
-        method_name='get_is_subscribed'
-    )
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -33,7 +31,9 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class SubscriptionSerializer(CustomUserSerializer):
-    recipes = serializers.SerializerMethodField(method_name='get_recipes')
+    recipes = serializers.SerializerMethodField(
+        method_name='get_recipes'
+        )
     recipes_count = serializers.SerializerMethodField(
         method_name='get_recipes_count'
     )
