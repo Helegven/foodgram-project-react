@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from foodgram.const import max_len
+
+from foodgram.settings import max_len
 from ingridients.models import Ingredient
 from tags.models import Tag
 

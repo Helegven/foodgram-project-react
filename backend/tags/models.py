@@ -1,6 +1,7 @@
 from django.core.validators import RegexValidator
 from django.db import models
-from foodgram.const import max_len
+
+from foodgram.settings import max_len
 
 
 class Tag(models.Model):

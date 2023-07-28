@@ -7,6 +7,8 @@ SECRET_KEY = 'django-insecure-rr(kas$x%bp*y0=rn%y@&$a%33r-@3-)+sas5&fsv11&df(jl-
 
 DEBUG = True
 
+max_len = 200
+
 ALLOWED_HOSTS = [
     '158.160.73.173',
     '127.0.0.1',
@@ -48,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'api.urls'
+ROOT_URLCONF = 'foodgram.urls'
 
 TEMPLATES = [
     {
@@ -67,13 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -115,8 +110,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# STATIC_URL = '/backend_static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
