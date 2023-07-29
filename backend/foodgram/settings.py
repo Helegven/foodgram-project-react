@@ -3,9 +3,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-rr(kas$x%bp*y0=rn%y@&$a%33r-@3-)+sas5&fsv11&df(jl-'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-rr(kas$x%bp*y0=rn%y@&$a%33r-@3-)+sas5&fsv11&df(jl-')
 
-DEBUG = True
+DEBUG = False
 
 max_len = 200
 
@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'djoser',
     'sorl.thumbnail',
     'django_filters',
-    'api',
+    'api.apps.ApiConfig',
     'ingridients.apps.IngridientsConfig',
     'recipes.apps.RecipesConfig',
     'tags.apps.TagsConfig',
@@ -52,12 +52,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

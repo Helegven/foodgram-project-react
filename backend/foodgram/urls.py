@@ -20,10 +20,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router_v1.urls)),
     path('api/auth/', include('djoser.urls.authtoken')),
-    # path(
-    #     'redoc/',
-    #     TemplateView.as_view(template_name='redoc.html'),
-    # ),
+    path(
+        'redoc/',
+        TemplateView.as_view(template_name='redoc.html'),
+    ),
     # path(
     #     'redoc/openapi-schema.yml',
     #     TemplateView.as_view(template_name='openapi-schema.yml'),
