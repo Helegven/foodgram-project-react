@@ -1,9 +1,7 @@
-from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from ingridients.models import Ingredient
 from recipes.models import Recipe, RecipeIngredients, ShoppingCart
 from rest_framework import exceptions, serializers
-from django.core.validators import MinValueValidator
 
 from tags.models import Tag
 from tags.serializers import TagSerializer
@@ -16,7 +14,7 @@ class RecipeIngredientsSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField(
         source='ingredient.id'
     )
-    name = serializers.SerializerMethodField(
+    name = serializers.CharField(
         read_only=True,
         source='ingredient.name'
     )
@@ -105,7 +103,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     ingredients = CreateUpdateRecipeIngredientsSerializer(many=True)
     image = Base64ImageField()
-    cooking_time = serializers.IntegerField(validators=[MinValueValidator(1)])
+    cooking_time = serializers.IntegerField(max_value=32767, min_value=1)
 
     class Meta:
         model = Recipe
