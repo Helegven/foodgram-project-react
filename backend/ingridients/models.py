@@ -1,5 +1,6 @@
 from django.db import models
-from foodgram.const import max_len
+
+from foodgram.settings import max_len
 
 
 class Ingredient(models.Model):

@@ -12,8 +12,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('Заполнение модели Ingredient из csv запущено.')
-        file_path = options['path'] + 'ingredients.csv'
-        with open(file_path, 'r') as csv_file:
+        with open(
+            'ingridients/management/data/ingredients.csv', 'r'
+        ) as csv_file:
             reader = csv.reader(csv_file)
 
             for row in reader:

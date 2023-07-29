@@ -3,9 +3,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
-from ingridients.views import IngredientViewSet
-from recipes.views import RecipeViewSet
 from rest_framework.routers import DefaultRouter
+
+from recipes.views import RecipeViewSet
+from ingridients.views import IngredientViewSet
 from tags.views import TagViewSet
 from users.views import CustomUserViewSet
 
@@ -23,6 +24,10 @@ urlpatterns = [
         'redoc/',
         TemplateView.as_view(template_name='redoc.html'),
     ),
+    path(
+        'redoc/openapi-schema.yml',
+        TemplateView.as_view(template_name='openapi-schema.yml'),
+    )
 ]
 
 if settings.DEBUG:

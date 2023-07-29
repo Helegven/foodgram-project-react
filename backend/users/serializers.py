@@ -28,13 +28,20 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         fields = ('id', 'username', 'first_name', 'last_name', 'email',
                   'password')
 
+    def validate(self, data):
+        if data['username'] == 'me':
+            raise serializers.ValidationError(
+                "Нельзя брать username - 'me'"
+            )
+        return data
+
 
 class SubscriptionSerializer(CustomUserSerializer):
     recipes = serializers.SerializerMethodField(
-        method_name='get_recipes'
+        # method_name='get_recipes'
     )
     recipes_count = serializers.SerializerMethodField(
-        method_name='get_recipes_count'
+        # method_name='get_recipes_count'
     )
 
     class Meta:
