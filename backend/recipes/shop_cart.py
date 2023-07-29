@@ -5,8 +5,8 @@ from ingridients.models import Ingredient
 from .models import RecipeIngredients, ShoppingCart
 
 
-def get_shopping_cart(self, request):
-    shopping_cart = ShoppingCart.objects.filter(user=self.request.user)
+def get_shopping_cart(request):
+    shopping_cart = ShoppingCart.objects.filter(user=request.user)
     recipes = [item.recipe.id for item in shopping_cart]
     buy_list = RecipeIngredients.objects.filter(
         recipe__in=recipes

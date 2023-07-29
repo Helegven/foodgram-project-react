@@ -34,10 +34,10 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'django_filters',
     'api',
-    'ingridients',
-    'recipes',
-    'tags',
-    'users',
+    'ingridients.apps.IngridientsConfig',
+    'recipes.apps.RecipesConfig',
+    'tags.apps.TagsConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [

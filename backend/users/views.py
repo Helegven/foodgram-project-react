@@ -66,12 +66,6 @@ class CustomUserViewSet(UserViewSet):
             raise exceptions.ValidationError(
                 'Подписка не была оформлена, либо уже удалена.'
             )
-
-        subscription = get_object_or_404(
-            Subscription,
-            user=user,
-            author=author
-        )
-        subscription.delete()
+        Subscription.objects.get(user=user, author=author).delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)

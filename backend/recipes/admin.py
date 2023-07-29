@@ -2,8 +2,6 @@ from django.contrib import admin
 
 from .models import Recipe, ShoppingCart
 
-# from django.contrib.admin import display
-
 
 class RecipeIngredientsInLine(admin.TabularInline):
     model = Recipe.ingredients.through
@@ -23,7 +21,6 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields = ('name', 'author')
     inlines = (RecipeIngredientsInLine, RecipeTagsInLine)
 
-    # @display(description='Количество в избранных')
     def added_in_favorites(self, obj):
         return obj.favorites.count()
 

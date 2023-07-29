@@ -3,10 +3,13 @@ from drf_extra_fields.fields import Base64ImageField
 from ingridients.models import Ingredient
 from recipes.models import Recipe, RecipeIngredients, ShoppingCart
 from rest_framework import exceptions, serializers
+from django.core.validators import MinValueValidator
+
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.models import Favorite
 from users.serializers import CustomUserSerializer
+from recipes.utils import ingridient_list
 
 
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
@@ -102,18 +105,11 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     ingredients = CreateUpdateRecipeIngredientsSerializer(many=True)
     image = Base64ImageField()
-    cooking_time = serializers.IntegerField()
+    cooking_time = serializers.IntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
         model = Recipe
         exclude = ('pub_date',)
-
-    def validate(self, data):
-        if data['cooking_time'] <= 0:
-            raise serializers.ValidationError(
-                "Время приготовления должно быть 1 или более."
-            )
-        return data
 
     def validate_tags(self, value):
         if not value:
@@ -142,19 +138,9 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         author = self.context.get('request').user
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
-
         recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags)
-
-        for ingredient in ingredients:
-            amount = ingredient['amount']
-            ingredient = get_object_or_404(Ingredient, pk=ingredient['id'])
-
-            RecipeIngredients.objects.create(
-                recipe=recipe,
-                ingredient=ingredient,
-                amount=amount
-            )
+        ingridient_list(ingredients, recipe)
 
         return recipe
 
@@ -166,16 +152,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients', None)
         if ingredients is not None:
             instance.ingredients.clear()
-
-            for ingredient in ingredients:
-                amount = ingredient['amount']
-                ingredient = get_object_or_404(Ingredient, pk=ingredient['id'])
-
-                RecipeIngredients.objects.update_or_create(
-                    recipe=instance,
-                    ingredient=ingredient,
-                    defaults={'amount': amount}
-                )
+            ingridient_list(ingredients, instance)
 
         return super().update(instance, validated_data)
 
