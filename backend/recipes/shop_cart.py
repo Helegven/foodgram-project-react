@@ -1,8 +1,9 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 
-from .models import RecipeIngredients, ShoppingCart
 from ingridients.models import Ingredient
+
+from .models import RecipeIngredients, ShoppingCart
 
 
 def get_shopping_cart(request):

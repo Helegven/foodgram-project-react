@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404
 
-from .models import RecipeIngredients
 from ingridients.models import Ingredient
 
+from .models import RecipeIngredients
 
-def ingridient_list(ingredients, recipe):
+
+def add_ingridient(ingredients, recipe):
     for ingredient in ingredients:
         amount = ingredient['amount']
         ingredient = get_object_or_404(Ingredient, pk=ingredient['id'])

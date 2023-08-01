@@ -1,6 +1,7 @@
 import csv
 
 from django.core.management.base import BaseCommand
+
 from ingridients.models import Ingredient
 
 
@@ -11,7 +12,10 @@ class Command(BaseCommand):
         parser.add_argument('--path', type=str, help='Путь к файлу')
 
     def handle(self, *args, **options):
-        print('Заполнение модели Ingredient из csv запущено.')
+        self.stdout.write(
+            "Заполнение модели Ingredient из csv запущено.",
+            ending=''
+        )
         with open(
             'ingridients/management/data/ingredients.csv', 'r'
         ) as csv_file:
@@ -24,10 +28,14 @@ class Command(BaseCommand):
                         measurement_unit=row[1],
                     )
                     if not created:
-                        print(
-                            f'Ингредиент {obj} уже существует в базе данных.'
+                        self.stdout.write(
+                            f'Ингредиент {obj} уже существует в базе данных.',
+                            ending=''
                         )
                 except Exception as error:
-                    print(f'Ошибка в строке {row}: {error}')
+                    self.stdout.write(
+                        f'Ошибка в строке {row}: {error}',
+                        ending=''
+                    )
 
-        print('Заполнение модели Ingredient завершено.')
+        self.stdout.write('Заполнение модели Ingredient завершено.')

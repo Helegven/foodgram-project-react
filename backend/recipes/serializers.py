@@ -1,13 +1,13 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import exceptions, serializers
 
+from ingridients.models import Ingredient
+from recipes.models import Recipe, RecipeIngredients, ShoppingCart
+from recipes.utils import add_ingridient
 from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.models import Favorite
 from users.serializers import CustomUserSerializer
-from recipes.utils import ingridient_list
-from ingridients.models import Ingredient
-from recipes.models import Recipe, RecipeIngredients, ShoppingCart
 
 
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
@@ -138,7 +138,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags)
-        ingridient_list(ingredients, recipe)
+        add_ingridient(ingredients, recipe)
 
         return recipe
 
@@ -150,7 +150,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients', None)
         if ingredients is not None:
             instance.ingredients.clear()
-            ingridient_list(ingredients, instance)
+            add_ingridient(ingredients, instance)
 
         return super().update(instance, validated_data)
 

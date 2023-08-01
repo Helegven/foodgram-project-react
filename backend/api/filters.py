@@ -12,10 +12,10 @@ class RecipeFilter(rest_framework.FilterSet):
     is_in_shopping_cart = filters.BooleanFilter(
         method='filter_is_in_shopping_cart'
     )
-    author = rest_framework.NumberFilter(
-        field_name='author',
-        lookup_expr='exact'
-    )
+    # author = rest_framework.NumberFilter(
+    #     field_name='author',
+    #     lookup_expr='exact'
+    # )
     tags = rest_framework.ModelMultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',
