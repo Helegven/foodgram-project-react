@@ -1,12 +1,11 @@
+from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
-
-from foodgram.settings import max_len
 
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=max_len,
+        max_length=settings.MAX_LEN,
         verbose_name='Название тега',
         help_text='Название тега',
     )

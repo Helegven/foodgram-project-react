@@ -5,9 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-rr(kas$x%bp*y0=rn%y@&$a%33r-@3-)+sas5&fsv11&df(jl-')
 
-DEBUG = False
+DEBUG = True
 
-max_len = 200
+MAX_LEN = 200
 
 ALLOWED_HOSTS = [
     '158.160.73.173',
@@ -19,7 +19,6 @@ ALLOWED_HOSTS = [
 ]
 
 AMAUNT_POST_ON_PAGE = 6
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -81,6 +80,13 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
@@ -112,7 +118,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

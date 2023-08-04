@@ -1,11 +1,10 @@
+from django.conf import settings
 from django.db import models
-
-from foodgram.settings import max_len
 
 
 class Ingredient(models.Model):
     name = models.CharField(
-        max_length=max_len,
+        max_length=settings.MAX_LEN,
         verbose_name='Название ингредиента',
         help_text='Название ингредиента',
     )

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from recipes.models import Recipe
@@ -38,6 +39,14 @@ class Subscription(models.Model):
     def __str__(self):
         return f'Подписка {self.user} на {self.author}'
 
+    def clean(self):
+
+        if self.user == self.author:
+
+            raise ValidationError(
+                'Само-лайк это плохо. Подписка на себя запрещена'
+            )
+
 
 class Favorite(models.Model):
     user = models.ForeignKey(
@@ -56,6 +65,7 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
+        default_related_name = 'favorites'
 
         constraints = (
             models.UniqueConstraint(
