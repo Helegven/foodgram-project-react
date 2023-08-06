@@ -10,7 +10,7 @@ def get_shopping_cart(request):
             recipe__in_shopping_list__user=request.user
         ).values('ingredient').annotate(
             total_amount=Sum('amount')
-            ).values_list(
+        ).values_list(
                 'ingredient__name',
                 'total_amount',
                 'ingredient__measurement_unit'
@@ -26,5 +26,5 @@ def get_shopping_cart(request):
     )
     response['Content-Disposition'] = (
         'attachment; filename=shopping-list.txt'
-        )
+    )
     return response
