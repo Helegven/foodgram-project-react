@@ -30,7 +30,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
                   'password')
 
     def validate_username(self, value):
-        if 'me' in value.lower():
+        if 'me' == value.lower():
             raise serializers.ValidationError(
                 "Нельзя брать username - 'me'"
             )
