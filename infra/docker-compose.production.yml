@@ -1,11 +1,11 @@
-ersion: "3.7"
+version: "3.7"
 services:
   db:
     image: postgres:13.0-alpine
-    volumes:
-      - db_value:/var/lib/postgresql/data/
     env_file:
       - ./.env
+    volumes:
+      - db_value:/app/lib/postgresql/data/
 
   backend:
     image: helegven/foodgram_backend
@@ -42,5 +42,3 @@ volumes:
   media_value:
   frontend_value:
   db_value:
-
-
