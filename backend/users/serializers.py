@@ -29,12 +29,12 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         fields = ('id', 'username', 'first_name', 'last_name', 'email',
                   'password')
 
-    def validate_username(self, data):
-        if 'me':
+    def validate_username(self, value):
+        if 'me' in value.lower():
             raise serializers.ValidationError(
                 "Нельзя брать username - 'me'"
             )
-        return data
+        return value
 
 
 class SubscriptionSerializer(CustomUserSerializer):
