@@ -14,7 +14,7 @@ def get_shopping_cart(request):
                 'ingredient__name',
                 'total_amount',
                 'ingredient__measurement_unit'
-            )
+                )
     )
     buy_list_text = []
     [buy_list_text.append(
