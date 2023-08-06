@@ -8,13 +8,15 @@ def get_shopping_cart(request):
     ingredients = (
         RecipeIngredients.objects.filter(
             recipe__in_shopping_list__user=request.user
-        ).values('ingredient').annotate(
+        ).values(
+            'ingredient'
+        ).annotate(
             total_amount=Sum('amount')
         ).values_list(
-                'ingredient__name',
-                'total_amount',
-                'ingredient__measurement_unit'
-                )
+            'ingredient__name',
+            'total_amount',
+            'ingredient__measurement_unit'
+        )
     )
     buy_list_text = []
     [buy_list_text.append(
