@@ -7,7 +7,7 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from api.pagination import CustomPagination
+from utils.pagination import CustomPagination
 
 from .models import Subscription, User
 from .serializers import SubscriptionSerializer

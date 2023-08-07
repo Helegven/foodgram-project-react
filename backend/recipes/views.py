@@ -6,15 +6,15 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.filters import RecipeFilter
-from api.pagination import CustomPagination
-from api.permissions import IsAuthorOrAdminPermission
 from users.models import Favorite
+from utils.filters import RecipeFilter
+from utils.pagination import CustomPagination
+from utils.permissions import IsAuthorOrAdminPermission
 
 from .models import Recipe, ShoppingCart
 from .serializers import (RecipeCreateUpdateSerializer, RecipeSerializer,
                           ShortRecipeSerializer)
-from .shop_cart import get_shopping_cart
+from .utils import get_shopping_cart
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

@@ -19,7 +19,7 @@ class RecipeIngredientsSerializer(serializers.ModelSerializer):
         source='ingredient.name'
     )
     measurement_unit = serializers.SerializerMethodField(
-        read_only=True,
+        # read_only=True,
         source='ingredient.measurement_unit'
     )
 
@@ -30,8 +30,8 @@ class RecipeIngredientsSerializer(serializers.ModelSerializer):
     def get_id(self, obj):
         return obj.ingredient.id
 
-    def get_name(self, obj):
-        return obj.ingredient.name
+    # def get_name(self, obj):
+    #     return obj.ingredient.name
 
     def get_measurement_unit(self, obj):
         return obj.ingredient.measurement_unit
