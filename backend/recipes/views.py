@@ -10,7 +10,6 @@ from users.models import Favorite
 from utils.filters import RecipeFilter
 from utils.pagination import CustomPagination
 from utils.permissions import IsAuthorOrAdminPermission
-
 from .models import Recipe, ShoppingCart
 from .serializers import (RecipeCreateUpdateSerializer, RecipeSerializer,
                           ShortRecipeSerializer)

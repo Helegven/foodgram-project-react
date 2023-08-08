@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-rr(kas$x%bp*y0=rn%y@&$a%33r-@3-)+sas5&fsv11&df(jl-')
 
-DEBUG = True
+DEBUG = False
 
 MAX_LEN = 200
 
