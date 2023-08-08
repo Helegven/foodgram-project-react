@@ -8,17 +8,18 @@
 - #### Скачивать рецепты
 ---
 
-## Как запустить проект:
-``` Настраиваем Docker
-sudo apt update
-sudo apt install curl
-curl -fSL https://get.docker.com -o get-docker.sh
-sudo sh ./get-docker.sh
-sudo apt-get install docker-compose-plugin;
+### Как запустить проект:
+## 1. Настраиваем Docker
+```
+- sudo apt update
+- sudo apt install curl
+- curl -fSL https://get.docker.com -o get-docker.sh
+- sudo sh ./get-docker.sh
+- sudo apt-get install docker-compose-plugin;
 # Переходим в директорию проекта.
 cd foodgram-project-react/
 # Создаем и редактируем файл .env, в котором нужно указать данные
-sudo nano .env
+- sudo nano .env
 # 
 DJANGO_KEY=django-insecure-cg6*%6d51ef8f#4!r3*$vmxm4)abgjw8mo!4y-q*uq1!4$-88$
 POSTGRES_DB=<Желаемое_имя_базы_данных>
@@ -29,17 +30,47 @@ DB_PORT=5432
 
 # Сохраняем файл. Ключ DJANGO_KEY рекомендуется заменить
 # Далее выполняем последовательно
-sudo docker compose -f docker-compose.production.yml pull
-sudo docker compose -f docker-compose.production.yml down
-sudo docker compose -f docker-compose.production.yml up -d
-sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
-sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
-sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/static/. /static_backend/static/
+- sudo docker compose -f docker-compose.production.yml pull
+- sudo docker compose -f docker-compose.production.yml down
+- sudo docker compose -f docker-compose.production.yml up -d
+- sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+- sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+- sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/static/. /static_backend/static/
 
 # Создаем суперпользователся. Следуем инструкциям при выполнении.
 sudo docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
 ```
-Устанавливаем и настраиваем NGINX
+Проверяем что докер работает:
+```
+- sudo systemctl status docker 
+```
+## 2. Переносим docker-compose на сервер
+
+```
+# Создаём на сервере новую директорию и сразу в неё переходим.
+- sudo mkdir foodgram && cd foodgram
+
+# Cоздаём файл докер-компос.
+- sudo touch docker-compose.production.yml 
+
+# Переносим в файл докер-компосе на севрере содержимое локального файла.
+- sudo nano docker-compose.production.yml 
+# копируем cntrl+shift+c и переносим cntrl+shift+v
+```
+## 3. Запускаем проект
+
+```
+#Если треубется освободить место от ненужных данных образов и контейнеров сначала впишите команду
+- sudo docker compose -f docker-compose.production.yml down -v && sudo docker system prune -af 
+
+#Далее введите скрипт, который запустит скачает все необходимыые образы с докер-хаба
+#Запустит контейнер и выполнит все неообходимы предустановки по проекту
+#Скрипт закончит отработку на этапе создания супер-пользователя. 
+- sudo docker compose -f docker-compose.production.yml up -d && sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate && sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic && sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/static/. /static/ && sudo docker compose -f docker-compose.production.yml exec backend python manage.py load_data && sudo docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
+
+```
+
+## 4.Устанавливаем и настраиваем NGINX
 
 ```bash
 # Устанавливаем NGINX
@@ -206,4 +237,4 @@ response 200 :
 
 ```
 
-#### Полный перечень запросов вы можете посмотреть по "http://foodgram.example.org/api/docs/"
+#### Полный перечень запросов вы можете посмотреть по "http://localhost/api/docs/redoc.html"
