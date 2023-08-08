@@ -97,3 +97,113 @@ sudo certbot --nginx
 # Перезапускаем NGINX
 sudo systemctl reload nginx
 ```
+
+## Для проверки работы API
+
+#### 1. Создадим пользователя:
+
+POST : https://foodisgood.ddns.net/api/users/
+
+```
+{
+  "email": "vpupkin@yandex.ru",
+  "username": "vasya.pupkin",
+  "first_name": "Вася",
+  "last_name": "Пупкин",
+  "password": "Qwerty123"
+}
+
+respone 200 : 
+
+{
+"email": "vpupkin@yandex.ru",
+"id": 0,
+"username": "vasya.pupkin",
+"first_name": "Вася",
+"last_name": "Пупкин"
+}
+
+```
+
+#### 2. Получим Токен для авторизации. 
+
+POST : https://foodisgood.ddns.net/api/auth/token/login/
+
+```
+{
+  "password": "string",
+  "email": "string"
+}
+
+respone 201 : 
+
+{
+  "auth_token": "здесть_будет_указа_токен"
+}
+
+```
+#### 3. Создание рецепта. 
+Здесь в хэдр запроса нужно будет добавить полученный на предудущем шаге токен. 
+Так-же перед запросом создайте через админ-панель теги.
+
+Authorization: Token ваш_токен
+
+POST : https://foodisgood.ddns.net/api/recipes/
+
+```
+{
+  "ingredients": [
+    {
+      "id": 1123,
+      "amount": 10
+    }
+  ],
+  "tags": [
+    1,
+    2
+  ],
+  "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
+  "name": "string",
+  "text": "string",
+  "cooking_time": 1
+}
+
+response 200 :
+
+{
+  "id": 0,
+  "tags": [
+    {
+      "id": 0,
+      "name": "Завтрак",
+      "color": "#E26C2D",
+      "slug": "breakfast"
+    }
+  ],
+  "author": {
+    "email": "user@example.com",
+    "id": 0,
+    "username": "string",
+    "first_name": "Вася",
+    "last_name": "Пупкин",
+    "is_subscribed": false
+  },
+  "ingredients": [
+    {
+      "id": 0,
+      "name": "Картофель отварной",
+      "measurement_unit": "г",
+      "amount": 1
+    }
+  ],
+  "is_favorited": true,
+  "is_in_shopping_cart": true,
+  "name": "string",
+  "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+  "text": "string",
+  "cooking_time": 1
+}
+
+```
+
+#### Полный перечень запросов вы можете посмотреть по "http://foodgram.example.org/api/docs/"
