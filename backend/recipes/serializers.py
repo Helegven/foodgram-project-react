@@ -11,30 +11,20 @@ from users.serializers import CustomUserSerializer
 
 
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField(
+    id = serializers.ReadOnlyField(
         source='ingredient.id'
     )
-    name = serializers.CharField(
+    name = serializers.SlugRelatedField(
         read_only=True,
-        source='ingredient.name'
+        slug_field='recipe'
     )
-    measurement_unit = serializers.SerializerMethodField(
-        # read_only=True,
+    measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
     )
 
     class Meta:
         model = RecipeIngredients
         fields = ('id', 'name', 'measurement_unit', 'amount')
-
-    def get_id(self, obj):
-        return obj.ingredient.id
-
-    # def get_name(self, obj):
-    #     return obj.ingredient.name
-
-    def get_measurement_unit(self, obj):
-        return obj.ingredient.measurement_unit
 
 
 class CreateUpdateRecipeIngredientsSerializer(serializers.ModelSerializer):
